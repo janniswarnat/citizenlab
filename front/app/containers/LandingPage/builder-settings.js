@@ -2,7 +2,7 @@ import { Builder, builder } from '@builder.io/react';
 
 // Be sure to import all of your components where you use <BuilderComponent /> so they are
 // bundled and accessible
-import './TripleColumns/TripleColumns.builder';
+import './ProjectCard/ProjectCard.builder';
 
 // Add your public apiKey here
 const YOUR_KEY = '7b78e1a1ad944f6dbe06cd71d7941555';
@@ -22,5 +22,5 @@ if (OVERRIDE_INSERT_MENU) {
 
 Builder.register('insertMenu', {
   name: 'Custom Component Menu',
-  items: [{ name: 'CustomComponent' }],
+  items: [{ name: 'ProjectCard' }],
 });
