@@ -5,12 +5,161 @@ import {
   Input,
   Button as ClButton,
   Select,
-  colors,
 } from '@citizenlab/cl2-component-library';
+import { Paper } from '@material-ui/core';
 
 import ProjectCard from 'components/ProjectCard';
 import TextArea from 'components/UI/TextArea';
 
+// ************** Nestable Container  **************
+export const Container = ({ background, padding, children, ...props }) => {
+  const {
+    connectors: { connect, drag },
+  } = useNode();
+  return (
+    <Paper
+      {...props}
+      ref={(ref) => connect(drag(ref as HTMLElement))}
+      style={{ background, padding: `${padding}px`, flexGrow: 1 }}
+    >
+      {children}
+    </Paper>
+  );
+};
+
+export const ContainerSettings = () => {
+  const {
+    padding,
+    background,
+    actions: { setProp },
+  } = useNode((node) => ({
+    background: node.data.props.background,
+    padding: node.data.props.padding,
+  }));
+
+  return (
+    <div>
+      <Input
+        type="number"
+        label="Padding"
+        value={padding}
+        onChange={(value) => {
+          setProp((props) => (props.padding = value));
+        }}
+      />
+      <Input
+        type="text"
+        label="Background Hex"
+        value={background}
+        onChange={(value) => {
+          setProp((props) => (props.background = value));
+        }}
+      />
+    </div>
+  );
+};
+
+export const ContainerDefaultProps = {
+  background: '#ffffff',
+  padding: 3,
+};
+
+Container.craft = {
+  props: {
+    padding: 20,
+    background: '#abced2',
+  },
+  related: {
+    settings: ContainerSettings,
+  },
+};
+// ************** Card **************
+export const Card = ({
+  titleText,
+  subtitle,
+  buttonStyle,
+  background,
+  padding = '20px',
+}) => {
+  const {
+    connectors: { connect, drag },
+  } = useNode();
+  return (
+    <Box ref={(ref: any) => connect(drag(ref))}>
+      <Box style={{ pointerEvents: 'none' }}></Box>
+      <Container background={background} padding={padding}>
+        <div className="text-only" style={{ textAlign: 'center' }}>
+          <Text text={titleText} fontSize={20} />
+          <Text text={subtitle} fontSize={15} />
+        </div>
+        <div className="buttons-only">
+          <ClButton
+            style={{}}
+            width="auto"
+            locale="en"
+            buttonStyle={buttonStyle}
+          >
+            Button Text
+          </ClButton>
+        </div>
+      </Container>
+    </Box>
+  );
+};
+
+const CardSettings = () => {
+  const {
+    actions: { setProp },
+    titleText,
+    subtitle,
+    background,
+  } = useNode((node) => ({
+    titleText: node.data.props.titleText,
+    subtitle: node.data.props.subtitle,
+    background: node.data.props.background,
+  }));
+
+  return (
+    <div>
+      <Input
+        type="text"
+        label="Title"
+        value={titleText}
+        onChange={(value) => {
+          setProp((props) => (props.titleText = value));
+        }}
+      />
+      <Input
+        type="text"
+        label="Subtitle"
+        value={subtitle}
+        onChange={(value) => {
+          setProp((props) => (props.subtitle = value));
+        }}
+      />
+      <Input
+        type="text"
+        label="Background Hex"
+        value={background}
+        onChange={(value) => {
+          setProp((props) => (props.background = value));
+        }}
+      />
+    </div>
+  );
+};
+
+Card.craft = {
+  props: {
+    titleText: 'Title',
+    background: '#abced2',
+  },
+  related: {
+    settings: CardSettings,
+  },
+};
+
+// ************** Project **************
 const Project = ({ size }) => {
   const {
     connectors: { connect, drag },
@@ -19,7 +168,7 @@ const Project = ({ size }) => {
     <Box ref={(ref: any) => connect(drag(ref))}>
       <Box style={{ pointerEvents: 'none' }}>
         <ProjectCard
-          projectId="d738f014-122c-4120-8fd8-ece96e27ebe3"
+          projectId="31e861cf-e73e-44ed-a797-0a76dd6cf8ec"
           size={size}
           layout="twocolumns"
         />
@@ -62,73 +211,7 @@ Project.craft = {
   },
 };
 
-export const Container = ({ background, padding = '0px', children }) => {
-  const {
-    connectors: { connect, drag },
-  } = useNode();
-  return (
-    <Box
-      ref={(ref: any) => connect(drag(ref))}
-      background={background}
-      padding={padding}
-    >
-      {children}
-    </Box>
-  );
-};
-
-export const CardTop = ({ children }) => {
-  const {
-    connectors: { connect },
-  } = useNode();
-  return (
-    <div ref={connect as any} className="text-only">
-      {children}
-    </div>
-  );
-};
-
-CardTop.craft = {
-  rules: {
-    // Only accept Text
-    canMoveIn: (incomingNodes) =>
-      incomingNodes.every((incomingNode) => incomingNode.data.type === Text),
-  },
-};
-
-export const CardBottom = ({ children }) => {
-  const {
-    connectors: { connect },
-  } = useNode();
-  return <div ref={connect as any}>{children}</div>;
-};
-
-CardBottom.craft = {
-  rules: {
-    // Only accept Buttons
-    canMoveIn: (incomingNodes) =>
-      incomingNodes.every((incomingNode) => incomingNode.data.type === Button),
-  },
-};
-
-export const Card = ({ background = colors.background, padding = '20px' }) => {
-  return (
-    <Container background={background} padding={padding}>
-      <Element id="text" is={CardTop} canvas>
-        {' '}
-        // Canvas Node of type CardTop
-        <Text text="Title" fontSize={20} />
-        <Text text="Subtitle" fontSize={15} />
-      </Element>
-      <Element id="buttons" is={CardBottom} canvas>
-        {' '}
-        // Canvas Node of type CardBottom
-        <Button text="Learn more" buttonStyle="primary" />
-      </Element>
-    </Container>
-  );
-};
-
+// ************** Text **************
 const Text = ({ text, fontSize }) => {
   const {
     connectors: { connect, drag },
@@ -182,6 +265,7 @@ Text.craft = {
   },
 };
 
+// ************** Button **************
 const Button = ({ text, buttonStyle }) => {
   const {
     connectors: { connect, drag },
@@ -241,6 +325,7 @@ Button.craft = {
   },
 };
 
+// ************** Toolbox **************
 const Toolbox = () => {
   const { connectors } = useEditor();
   return (
@@ -279,11 +364,125 @@ const Toolbox = () => {
             Project
           </button>
         </Box>
+        <Box>
+          <button
+            ref={(ref: any) =>
+              connectors.create(
+                ref,
+                <Card
+                  subtitle="Subtitle"
+                  titleText="Title"
+                  buttonStyle="primary"
+                  background="#abced2"
+                />
+              )
+            }
+          >
+            Card
+          </button>
+        </Box>
+        <Box>
+          <button
+            ref={(ref: any) =>
+              connectors.create(
+                ref,
+                <Element
+                  canvas
+                  is={Container}
+                  padding={20}
+                  background="#ffffff"
+                  data-cy="root-container"
+                ></Element>
+              )
+            }
+          >
+            Container
+          </button>
+        </Box>
+        <Box>
+          <button
+            ref={(ref: any) =>
+              connectors.create(
+                ref,
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-evenly',
+                  }}
+                >
+                  <Element
+                    canvas
+                    is={Container}
+                    padding={20}
+                    background="#ffffff"
+                    data-cy="root-container"
+                    style={{ flexGrow: 1, flexBasis: '50%' }}
+                  ></Element>
+                  <Element
+                    canvas
+                    is={Container}
+                    padding={20}
+                    background="#ffffff"
+                    data-cy="root-container"
+                    style={{ flexGrow: 1, flexBasis: '50%' }}
+                  ></Element>
+                </div>
+              )
+            }
+          >
+            TwoColumn
+          </button>
+        </Box>
+        <Box>
+          <button
+            ref={(ref: any) =>
+              connectors.create(
+                ref,
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-evenly',
+                  }}
+                >
+                  <Element
+                    canvas
+                    is={Container}
+                    padding={20}
+                    background="#ffffff"
+                    data-cy="root-container"
+                    style={{ flexGrow: 1, flexBasis: '20%' }}
+                  ></Element>
+                  <Element
+                    canvas
+                    is={Container}
+                    padding={20}
+                    background="#ffffff"
+                    data-cy="root-container"
+                    style={{ flexGrow: 1, flexBasis: '20%' }}
+                  ></Element>
+                  <Element
+                    canvas
+                    is={Container}
+                    padding={20}
+                    background="#ffffff"
+                    data-cy="root-container"
+                    style={{ flexGrow: 1, flexBasis: '20%' }}
+                  ></Element>
+                </div>
+              )
+            }
+          >
+            ThreeColumn
+          </button>
+        </Box>
       </Box>
     </Box>
   );
 };
 
+// ************** Settings Panel **************
 const SettingsPanel = () => {
   const { actions, selected, isEnabled } = useEditor((state, query) => {
     const currentNodeId = query.getEvent('selected').last();
@@ -339,6 +538,7 @@ const SettingsPanel = () => {
 
 const defaultTree = `{"ROOT":{"type":{"resolvedName":"Box"},"isCanvas":true,"props":{"padding":5,"data-cy":"root-container"},"displayName":"Box","custom":{},"hidden":false,"nodes":["V-P2voDZgz","lYBn3m5ohR","6meg70qIWd"],"linkedNodes":{}},"V-P2voDZgz":{"type":{"resolvedName":"Text"},"isCanvas":false,"props":{"text":"Hi world!","fontSize":"20px"},"displayName":"Text","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}},"lYBn3m5ohR":{"type":{"resolvedName":"Text"},"isCanvas":false,"props":{"text":"It's me again!","fontSize":"20px"},"displayName":"Text","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}},"6meg70qIWd":{"type":{"resolvedName":"Button"},"isCanvas":false,"props":{"text":"Button Here","buttonStyle":"primary"},"displayName":"Button","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}}}`;
 
+// ************** Tree Panel **************
 const TreePanel = () => {
   const { query, actions } = useEditor();
 
@@ -371,21 +571,30 @@ const TreePanel = () => {
 
 export default function ProjectPageBuilder() {
   return (
-    <Editor
-      resolver={{ Text, Box, Button, Project, Card, CardBottom, CardTop }}
-    >
+    <Editor resolver={{ Text, Box, Button, Project, Card, Container }}>
       <Box p="10px">
         <h5>A super simple page editor</h5>
         <Box display="flex" width="100%">
           <Box width="80%">
             <Frame>
-              <Element canvas is={Box} padding={5} data-cy="root-container">
-                <Card />
-                <Text fontSize="20px" text="Hi world!" />
-                <Box>
-                  <Text fontSize="20px" text="It's me again!" />
-                  <Button buttonStyle="primary" text="Button Here" />
-                </Box>
+              <Element
+                canvas
+                is={Container}
+                padding={5}
+                background="#eeeeee"
+                data-cy="root-container"
+              >
+                <Button text="Click me" buttonStyle="primary" />
+                <Text fontSize={20} text="Textbox I" data-cy="frame-text" />
+                <Element
+                  canvas
+                  is={Container}
+                  padding={6}
+                  background="#999999"
+                  data-cy="frame-container"
+                >
+                  <Text text="Textbox II" fontSize={20} />
+                </Element>
               </Element>
             </Frame>
           </Box>
