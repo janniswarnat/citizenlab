@@ -168,7 +168,7 @@ const Project = ({ size }) => {
     <Box ref={(ref: any) => connect(drag(ref))}>
       <Box style={{ pointerEvents: 'none' }}>
         <ProjectCard
-          projectId="31e861cf-e73e-44ed-a797-0a76dd6cf8ec"
+          projectId="bcb0baaf-8068-4499-ba1b-69468f75f452"
           size={size}
           layout="twocolumns"
         />
@@ -389,6 +389,7 @@ const Toolbox = () => {
                 <Element
                   canvas
                   is={Container}
+                  children={undefined}
                   padding={20}
                   background="#ffffff"
                   data-cy="root-container"
@@ -414,6 +415,7 @@ const Toolbox = () => {
                   <Element
                     canvas
                     is={Container}
+                    children={undefined}
                     padding={20}
                     background="#ffffff"
                     data-cy="root-container"
@@ -422,6 +424,7 @@ const Toolbox = () => {
                   <Element
                     canvas
                     is={Container}
+                    children={undefined}
                     padding={20}
                     background="#ffffff"
                     data-cy="root-container"
@@ -449,6 +452,7 @@ const Toolbox = () => {
                   <Element
                     canvas
                     is={Container}
+                    children={undefined}
                     padding={20}
                     background="#ffffff"
                     data-cy="root-container"
@@ -457,6 +461,7 @@ const Toolbox = () => {
                   <Element
                     canvas
                     is={Container}
+                    children={undefined}
                     padding={20}
                     background="#ffffff"
                     data-cy="root-container"
@@ -465,6 +470,7 @@ const Toolbox = () => {
                   <Element
                     canvas
                     is={Container}
+                    children={undefined}
                     padding={20}
                     background="#ffffff"
                     data-cy="root-container"
