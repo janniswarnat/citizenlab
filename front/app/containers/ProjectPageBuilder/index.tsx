@@ -6,7 +6,6 @@ import {
   Button as ClButton,
   Select,
 } from '@citizenlab/cl2-component-library';
-import { Paper } from '@material-ui/core';
 
 import ProjectCard from 'components/ProjectCard';
 import TextArea from 'components/UI/TextArea';
@@ -17,13 +16,13 @@ export const Container = ({ background, padding, children, ...props }) => {
     connectors: { connect, drag },
   } = useNode();
   return (
-    <Paper
+    <Box
       {...props}
       ref={(ref) => connect(drag(ref as HTMLElement))}
       style={{ background, padding: `${padding}px`, flexGrow: 1 }}
     >
       {children}
-    </Paper>
+    </Box>
   );
 };
 
@@ -86,7 +85,7 @@ export const Card = ({
   } = useNode();
   return (
     <Box ref={(ref: any) => connect(drag(ref))}>
-      <Box style={{ pointerEvents: 'none' }}></Box>
+      <Box style={{ pointerEvents: 'none' }} />
       <Container background={background} padding={padding}>
         <div className="text-only" style={{ textAlign: 'center' }}>
           <Text text={titleText} fontSize={20} />
@@ -168,7 +167,7 @@ const Project = ({ size }) => {
     <Box ref={(ref: any) => connect(drag(ref))}>
       <Box style={{ pointerEvents: 'none' }}>
         <ProjectCard
-          projectId="bcb0baaf-8068-4499-ba1b-69468f75f452"
+          projectId="0f3371a7-3632-44bf-bab1-e65e96c077c9"
           size={size}
           layout="twocolumns"
         />
@@ -393,7 +392,7 @@ const Toolbox = () => {
                   padding={20}
                   background="#ffffff"
                   data-cy="root-container"
-                ></Element>
+                />
               )
             }
           >
@@ -420,7 +419,7 @@ const Toolbox = () => {
                     background="#ffffff"
                     data-cy="root-container"
                     style={{ flexGrow: 1, flexBasis: '50%' }}
-                  ></Element>
+                  />
                   <Element
                     canvas
                     is={Container}
@@ -429,7 +428,7 @@ const Toolbox = () => {
                     background="#ffffff"
                     data-cy="root-container"
                     style={{ flexGrow: 1, flexBasis: '50%' }}
-                  ></Element>
+                  />
                 </div>
               )
             }
@@ -457,7 +456,7 @@ const Toolbox = () => {
                     background="#ffffff"
                     data-cy="root-container"
                     style={{ flexGrow: 1, flexBasis: '20%' }}
-                  ></Element>
+                  />
                   <Element
                     canvas
                     is={Container}
@@ -466,7 +465,7 @@ const Toolbox = () => {
                     background="#ffffff"
                     data-cy="root-container"
                     style={{ flexGrow: 1, flexBasis: '20%' }}
-                  ></Element>
+                  />
                   <Element
                     canvas
                     is={Container}
@@ -475,7 +474,7 @@ const Toolbox = () => {
                     background="#ffffff"
                     data-cy="root-container"
                     style={{ flexGrow: 1, flexBasis: '20%' }}
-                  ></Element>
+                  />
                 </div>
               )
             }
