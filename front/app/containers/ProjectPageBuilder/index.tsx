@@ -9,6 +9,8 @@ import {
 
 import ProjectCard from 'components/ProjectCard';
 import TextArea from 'components/UI/TextArea';
+import QuillEditor from 'components/UI/QuillEditor';
+import QuillEditedContent from 'components/UI/QuillEditedContent';
 
 // ************** Nestable Container  **************
 export const Container = ({ background, padding, children, ...props }) => {
@@ -88,8 +90,8 @@ export const Card = ({
       <Box style={{ pointerEvents: 'none' }} />
       <Container background={background} padding={padding}>
         <div className="text-only" style={{ textAlign: 'center' }}>
-          <Text text={titleText} fontSize={20} />
-          <Text text={subtitle} fontSize={15} />
+          <Text text={titleText} />
+          <Text text={subtitle} />
         </div>
         <div className="buttons-only">
           <ClButton
@@ -211,13 +213,15 @@ Project.craft = {
 };
 
 // ************** Text **************
-const Text = ({ text, fontSize }) => {
+const Text = ({ text }) => {
   const {
     connectors: { connect, drag },
   } = useNode();
   return (
     <div ref={(ref: any) => connect(drag(ref))}>
-      <p style={{ fontSize }}>{text}</p>
+      <QuillEditedContent>
+        <div dangerouslySetInnerHTML={{ __html: text }} />
+      </QuillEditedContent>
     </div>
   );
 };
@@ -225,29 +229,19 @@ const Text = ({ text, fontSize }) => {
 const TextSettings = () => {
   const {
     actions: { setProp },
-    fontSize,
     text,
   } = useNode((node) => ({
-    fontSize: node.data.props.fontSize,
     text: node.data.props.text,
   }));
 
   return (
     <div>
-      <Input
-        type="text"
-        label="text"
+      <QuillEditor
+        noImages
+        id="quill-editor"
         value={text}
         onChange={(value) => {
           setProp((props) => (props.text = value));
-        }}
-      />
-      <Input
-        type="text"
-        label="font size"
-        value={fontSize}
-        onChange={(value) => {
-          setProp((props) => (props.fontSize = value));
         }}
       />
     </div>
@@ -256,8 +250,7 @@ const TextSettings = () => {
 
 Text.craft = {
   props: {
-    text: 'Hi',
-    fontSize: 20,
+    text: '<p>Hi</p>',
   },
   related: {
     settings: TextSettings,
@@ -335,9 +328,7 @@ const Toolbox = () => {
         </Box>
         <Box>
           <button
-            ref={(ref: any) =>
-              connectors.create(ref, <Text text="Hi world" fontSize="20px" />)
-            }
+            ref={(ref: any) => connectors.create(ref, <Text text="Hi world" />)}
           >
             Text
           </button>
@@ -541,7 +532,7 @@ const SettingsPanel = () => {
   ) : null;
 };
 
-const defaultTree = `{"ROOT":{"type":{"resolvedName":"Box"},"isCanvas":true,"props":{"padding":5,"data-cy":"root-container"},"displayName":"Box","custom":{},"hidden":false,"nodes":["V-P2voDZgz","lYBn3m5ohR","6meg70qIWd"],"linkedNodes":{}},"V-P2voDZgz":{"type":{"resolvedName":"Text"},"isCanvas":false,"props":{"text":"Hi world!","fontSize":"20px"},"displayName":"Text","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}},"lYBn3m5ohR":{"type":{"resolvedName":"Text"},"isCanvas":false,"props":{"text":"It's me again!","fontSize":"20px"},"displayName":"Text","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}},"6meg70qIWd":{"type":{"resolvedName":"Button"},"isCanvas":false,"props":{"text":"Button Here","buttonStyle":"primary"},"displayName":"Button","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}}}`;
+const defaultTree = `{"ROOT":{"type":{"resolvedName":"Box"},"isCanvas":true,"props":{"padding":5,"data-cy":"root-container"},"displayName":"Box","custom":{},"hidden":false,"nodes":["V-P2voDZgz","lYBn3m5ohR","6meg70qIWd"],"linkedNodes":{}},"V-P2voDZgz":{"type":{"resolvedName":"Text"},"isCanvas":false,"props":{"text":"Hi world!"},"displayName":"Text","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}},"lYBn3m5ohR":{"type":{"resolvedName":"Text"},"isCanvas":false,"props":{"text":"It's me again!"},"displayName":"Text","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}},"6meg70qIWd":{"type":{"resolvedName":"Button"},"isCanvas":false,"props":{"text":"Button Here","buttonStyle":"primary"},"displayName":"Button","custom":{},"parent":"ROOT","hidden":false,"nodes":[],"linkedNodes":{}}}`;
 
 // ************** Tree Panel **************
 const TreePanel = () => {
@@ -554,7 +545,9 @@ const TreePanel = () => {
       <ClButton
         locale="en"
         buttonStyle="secondary"
-        onClick={() => setTreeString(query.serialize())}
+        onClick={() =>
+          setTreeString(JSON.stringify(JSON.parse(query.serialize()), null, 2))
+        }
         text="Print tree"
       />
       <ClButton
@@ -580,7 +573,7 @@ export default function ProjectPageBuilder() {
       <Box p="10px">
         <h5>A super simple page editor</h5>
         <Box display="flex" width="100%">
-          <Box width="80%">
+          <Box width="60%">
             <Frame>
               <Element
                 canvas
@@ -590,7 +583,7 @@ export default function ProjectPageBuilder() {
                 data-cy="root-container"
               >
                 <Button text="Click me" buttonStyle="primary" />
-                <Text fontSize={20} text="Textbox I" data-cy="frame-text" />
+                <Text text="Textbox I" data-cy="frame-text" />
                 <Element
                   canvas
                   is={Container}
@@ -598,12 +591,12 @@ export default function ProjectPageBuilder() {
                   background="#999999"
                   data-cy="frame-container"
                 >
-                  <Text text="Textbox II" fontSize={20} />
+                  <Text text="Textbox II" />
                 </Element>
               </Element>
             </Frame>
           </Box>
-          <Box width="20%">
+          <Box width="40%">
             <Toolbox />
             <SettingsPanel />
           </Box>
