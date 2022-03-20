@@ -973,27 +973,44 @@ class Streams {
 
     const streamIds3: string[] = [];
     if (regexApiEndpoint && regexApiEndpoint.length > 0) {
-      forOwn(this.streamIdsByApiEndPointWithQuery, (_value, key) => {
-        regexApiEndpoint.forEach((regex) => {
-          const streamIdsByApiEndPointWithQuery =
-            this.streamIdsByApiEndPointWithQuery[key];
+      addStreamIdsForApiEndpointRegexes(
+        this.streamIdsByApiEndPointWithQuery,
+        regexApiEndpoint
+      );
+      addStreamIdsForApiEndpointRegexes(
+        this.streamIdsByApiEndPointWithoutQuery,
+        regexApiEndpoint
+      );
+    }
 
-          if (regex.test(key) && streamIdsByApiEndPointWithQuery) {
-            streamIds3.push(...streamIdsByApiEndPointWithQuery);
+    function addStreamIdsForApiEndpointRegexes(
+      streamIdsByApiEndPoint: {
+        [key: string]: string[];
+      },
+      regexesForApiEndpoint: RegExp[]
+    ) {
+      Object.keys(streamIdsByApiEndPoint).forEach((apiEndpoint) => {
+        regexesForApiEndpoint.forEach((regex) => {
+          const streamIds = streamIdsByApiEndPoint[apiEndpoint];
+          if (streamIds) {
+            conditionallyAddStreamIdsToStreamIds(
+              streamIds3,
+              streamIds,
+              regex.test(apiEndpoint)
+            );
           }
         });
       });
+    }
 
-      forOwn(this.streamIdsByApiEndPointWithoutQuery, (_value, key) => {
-        regexApiEndpoint.forEach((regex) => {
-          const streamIdsByApiEndPointWithoutQuery =
-            this.streamIdsByApiEndPointWithoutQuery[key];
-
-          if (regex.test(key) && streamIdsByApiEndPointWithoutQuery) {
-            streamIds3.push(...streamIdsByApiEndPointWithoutQuery);
-          }
-        });
-      });
+    function conditionallyAddStreamIdsToStreamIds(
+      targetStreamIds: string[],
+      streamIdsToAdd: string[],
+      condition: boolean
+    ) {
+      if (condition) {
+        targetStreamIds.push(...streamIdsToAdd);
+      }
     }
 
     const mergedStreamIds = [...streamIds1, ...streamIds2, ...streamIds3];
