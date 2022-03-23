@@ -111,10 +111,39 @@ export const chartTheme = (theme) => {
 };
 
 const API_URL = 'http://localhost:4444';
-const CUBEJS_TOKEN = '53063e17bc4f79488c2445e882d03b17';
+// const CUBEJS_TOKEN = '53063e17bc4f79488c2445e882d03b17';
 
-const cubejsApi = cubejs(CUBEJS_TOKEN, {
+function getCookie(cname) {
+  let name = cname + '=';
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return '';
+}
+
+function wrap(str: string) {
+  // return `-----BEGIN PUBLIC KEY-----\n${str}\n-----END PUBLIC KEY-----`
+  return `${str}`;
+}
+
+// const cubejsApi = cubejs(getCookie('cl2_jwt'), {
+//   apiUrl: `${API_URL}/cubejs-api/v1`
+// });
+
+const cubejsApi = cubejs({
   apiUrl: `${API_URL}/cubejs-api/v1`,
+  headers: {
+    Authorization: wrap(getCookie('cl2_jwt')),
+    // Authorization: getCookie('cl2_jwt')
+  },
 });
 
 type Props = {

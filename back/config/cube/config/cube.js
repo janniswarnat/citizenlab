@@ -69,5 +69,11 @@ module.exports = {
       }
     ));
   },
+
+  jwt: {
+    algorithms: ['RS256']
+  },
+
+  // checkAuth: () => {}
 };
 
