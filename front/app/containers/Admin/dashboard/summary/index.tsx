@@ -8,6 +8,7 @@ import { GraphsContainer, ControlBar, Column } from 'components/admin/Chart';
 import ResolutionControl, {
   IResolution,
 } from 'components/admin/ResolutionControl';
+import BarChartActivities from './charts/BarChartActivities';
 import BarChartActiveUsersByTime from './charts/BarChartActiveUsersByTime';
 import LineBarChart from './charts/LineBarChart';
 import ChartFilters from '../components/ChartFilters';
@@ -350,6 +351,7 @@ class DashboardPageSummary extends PureComponent<PropsHithHoCs, State> {
             onTopicFilter={this.handleOnTopicFilter}
           />
           <GraphsContainer>
+            <BarChartActivities />
             <LineBarChart
               graphUnit="users"
               graphUnitMessageKey="users"
