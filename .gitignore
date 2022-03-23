@@ -7,3 +7,14 @@ node_modules
 citizenlab.config.ee.json
 
 *.DS_Store
+
+# Cube
+back/config/cube/.env
+back/config/cube/config
+!back/config/cube/config/schema
+!back/config/cube/config/utils
+!back/config/cube/config/cube.js
+
+# Matomo
+back/config/matomo/db.env
+back/config/matomo/config
