@@ -23,7 +23,7 @@ services:
     env_file:
       - ./db.env
     ports:
-      - 8080:80
+      - 9999:80
 
 volumes:
   matomo_db:

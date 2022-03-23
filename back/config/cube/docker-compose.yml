@@ -4,7 +4,7 @@ services:
   cube:
     image: cubejs/cube
     ports:
-      - 4000:4000
+      - 4444:4000
     environment:
       CUBEJS_DEV_MODE: 'true'
     env_file:
