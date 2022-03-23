@@ -25,13 +25,6 @@ import { rgba } from 'polished';
 import cubejs from '@cubejs-client/core';
 import { CubeProvider } from '@cubejs-client/react';
 
-const API_URL = 'http://localhost:4000';
-const CUBEJS_TOKEN = '53063e17bc4f79488c2445e882d03b17';
-
-const cubejsApi = cubejs(CUBEJS_TOKEN, {
-  apiUrl: `${API_URL}/cubejs-api/v1`,
-});
-
 const Container = styled.div`
   display: flex;
   background: ${colors.background};
@@ -116,6 +109,13 @@ export const chartTheme = (theme) => {
     barSize: 20,
   };
 };
+
+const API_URL = 'http://localhost:4444';
+const CUBEJS_TOKEN = '53063e17bc4f79488c2445e882d03b17';
+
+const cubejsApi = cubejs(CUBEJS_TOKEN, {
+  apiUrl: `${API_URL}/cubejs-api/v1`,
+});
 
 type Props = {
   className?: string;
