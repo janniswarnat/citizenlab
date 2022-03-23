@@ -11,6 +11,7 @@ import HasPermission from 'components/HasPermission';
 import Sidebar from './sideBar/';
 import styled, { ThemeProvider } from 'styled-components';
 import { colors, media } from 'utils/styleUtils';
+import Outlet from 'components/Outlet';
 
 // utils
 import clHistory from 'utils/cl-router/history';
@@ -20,7 +21,16 @@ import { endsWith } from 'utils/helperUtils';
 import 'assets/semantic/semantic.min.css';
 import { rgba } from 'polished';
 
-import Outlet from 'components/Outlet';
+// cube
+import cubejs from '@cubejs-client/core';
+import { CubeProvider } from '@cubejs-client/react';
+
+const API_URL = 'http://localhost:4000';
+const CUBEJS_TOKEN = '53063e17bc4f79488c2445e882d03b17';
+
+const cubejsApi = cubejs(CUBEJS_TOKEN, {
+  apiUrl: `${API_URL}/cubejs-api/v1`,
+});
 
 const Container = styled.div`
   display: flex;
@@ -176,25 +186,27 @@ const AdminPage = memo<Props & WithRouterProps>(
         action="access"
       >
         <ThemeProvider theme={chartTheme}>
-          <Container className={`${className} ${whiteBg ? 'whiteBg' : ''}`}>
-            {!adminFullWidthContent && (
-              <>
-                <Sidebar />
-                <RightColumn
-                  className={`${fullWidth && 'fullWidth'} ${
-                    noPadding && 'noPadding'
-                  }`}
-                >
-                  {children}
-                </RightColumn>
-              </>
-            )}
-            <Outlet
-              id="app.containers.Admin.contentBuilderLayout"
-              onMount={setAdminFullWidthContentToVisible}
-              childrenToRender={children}
-            />
-          </Container>
+          <CubeProvider cubejsApi={cubejsApi}>
+            <Container className={`${className} ${whiteBg ? 'whiteBg' : ''}`}>
+              {!adminFullWidthContent && (
+                <>
+                  <Sidebar />
+                  <RightColumn
+                    className={`${fullWidth && 'fullWidth'} ${
+                      noPadding && 'noPadding'
+                    }`}
+                  >
+                    {children}
+                  </RightColumn>
+                </>
+              )}
+              <Outlet
+                id="app.containers.Admin.contentBuilderLayout"
+                onMount={setAdminFullWidthContentToVisible}
+                childrenToRender={children}
+              />
+            </Container>
+          </CubeProvider>
         </ThemeProvider>
       </HasPermission>
     );
